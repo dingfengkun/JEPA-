@@ -115,7 +115,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--exp_dir', type=str, default='experiments/default',
                        help='Experiment directory')
-    parser.add_argument('--data_dir', type=str, default='./train',
+    parser.add_argument('--data_dir', type=str, default='/scratch/DL25SP/train',
                        help='Data directory')
     parser.add_argument('--resume', action='store_true',
                        help='Resume training from checkpoint')
