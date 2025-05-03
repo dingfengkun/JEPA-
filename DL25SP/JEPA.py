@@ -74,23 +74,19 @@ class Predictor(nn.Module):
             nn.LayerNorm(self.action_proj_dim)
         )
 
-        # Input channels for Conv2D = state_channels + action_channels = 64 + 64 = 128
+        # Input channels for ResNet = state_channels + action_channels = 64 + 64 = 128
         conv_input_channels = self.input_channels + self.action_proj_channels
         internal_channels = 256 # Hyperparameter for internal conv layers
 
-        # Convolutional Network
-        self.conv_net = nn.Sequential(
-            nn.Conv2d(conv_input_channels, internal_channels, kernel_size=3, stride=1, padding=1),
-            nn.BatchNorm2d(internal_channels),
-            nn.ReLU(),
-            nn.Conv2d(internal_channels, internal_channels, kernel_size=3, stride=1, padding=1),
-            nn.BatchNorm2d(internal_channels),
-            nn.ReLU(),
-            # Output channels should match encoder output channels (64)
-            nn.Conv2d(internal_channels, self.input_channels, kernel_size=1)
+        # 三层ResNet网络
+        self.res_net = nn.Sequential(
+            # 第一层
+            ResidualBlock(conv_input_channels, internal_channels),
+            # 第二层
+            ResidualBlock(internal_channels, internal_channels),
+            # 第三层
+            ResidualBlock(internal_channels, self.input_channels)
         )
-
-        # No flattening or final linear layer here - output remains spatial
 
     def forward(self, state_map, action):
         """
@@ -109,8 +105,8 @@ class Predictor(nn.Module):
         # 2. Concatenate state map and reshaped action along the channel dimension
         x = torch.cat([state_map, action_reshaped], dim=1) # [B, 128, 5, 5]
 
-        # 3. Pass through convolutional network to predict the change
-        predicted_change_map = self.conv_net(x) # [B, 64, 5, 5]
+        # 3. Pass through ResNet to predict the change
+        predicted_change_map = self.res_net(x) # [B, 64, 5, 5]
 
         # 4. Add residual connection
         next_state_map = state_map + predicted_change_map
