@@ -60,8 +60,9 @@ class TrajectoryDataset(Dataset):
 # 数据增强
 class TrajectoryTransform:
     """轨迹数据增强"""
-    def __init__(self, p=0.5):
+    def __init__(self, p=0.5, max_shift=4):
         self.p = p
+        self.max_shift = max_shift
         
     def __call__(self, state):
         """
@@ -74,7 +75,21 @@ class TrajectoryTransform:
         if torch.rand(1) < self.p:
             state = torch.flip(state, dims=[-1])
         
-        # 可以添加其他数据增强方法
+        # 随机平移墙
+        if torch.rand(1) < self.p:
+            # 只对墙的通道进行平移
+            wall_channel = state[1].unsqueeze(0)  # shape (1, 64, 64)
+            
+            # 随机生成平移量
+            shift_x = torch.randint(-self.max_shift, self.max_shift + 1, (1,)).item()
+            shift_y = torch.randint(-self.max_shift, self.max_shift + 1, (1,)).item()
+            
+            # 使用roll进行平移
+            wall_channel = torch.roll(wall_channel, shifts=(shift_x, shift_y), dims=(-2, -1))
+            
+            # 将平移后的墙通道放回原位置
+            state[1] = wall_channel.squeeze(0)
+        
         return state
 
 def setup_device():

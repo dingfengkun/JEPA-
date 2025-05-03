@@ -143,7 +143,11 @@ def main():
         'loss_type': 'vicreg',
         'save_freq': 5,
         'max_checkpoints': 5,
-        'use_data_augmentation': True
+        'use_data_augmentation': True,
+        'augmentation_params': {
+            'p': 0.3,  # 数据增强的概率
+            'max_shift': 4  # 最大平移距离
+        }
     }
 
     if args.resume:
@@ -162,7 +166,10 @@ def main():
     states, actions = load_data(args.data_dir)
     
     # Data augmentation
-    transform = TrajectoryTransform() if config['use_data_augmentation'] else None
+    transform = TrajectoryTransform(
+        p=config['augmentation_params']['p'],
+        max_shift=config['augmentation_params']['max_shift']
+    ) if config['use_data_augmentation'] else None
     
     # Create dataset
     dataset = TrajectoryDataset(states, actions, transform=transform)
