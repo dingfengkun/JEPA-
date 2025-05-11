@@ -117,14 +117,6 @@ If you use this code, please cite:
 
 ---
 
-## ✉️ Contact
-
-Feel free to open issues or pull requests, and drop any questions there!
-
-```
-
----
-
 That README captures all the **core mechanisms** (latent prediction, EMA, masking) that drive down loss, and gives users concrete guidance on structure, training, evaluation, and further tweaks. Let me know if you’d like to include example training curves or code snippets inside!
 ::contentReference[oaicite:5]{index=5}
 ```
