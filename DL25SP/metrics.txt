@@ -1,0 +1,6 @@
+normal loss: 4.480013847351074
+wall loss: 6.4416632652282715
+wall_other loss: 6.484577655792236
+expert loss: 54.776512145996094
+Total Trainable Parameters: 2,868,016
+python train_jepa.py --epochs 1 --lr 0.0096
