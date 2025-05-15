@@ -94,8 +94,8 @@ python evaluator.py --model_path checkpoints/best.pth \
 
 ## 🛠️ Tips for lowering loss further
 
-* **Backbone**: upgrade to larger ViT or ResNet gives richer embeddings.
-* **Mask scheduling**: gradually increase mask ratio over epochs.
+* **Backbone**: upgrade to a larger ViT or ResNet gives richer embeddings.
+* **Mask scheduling**: gradually increase the mask ratio over epochs.
 * **Loss**: try Huber over MSE if you see large outliers.
 * **Additional regularizers**: add cycle‑consistency or VICReg terms (see community forks).
 * **Optimizer**: AdamW with cosine scheduler often yields smoother convergence.
